@@ -1,6 +1,9 @@
 package com.programming.techie;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,13 +22,12 @@ class ContactManagerTest {
     @BeforeEach
     public void setup(){
         //create a fresh contactManager for each test case
-        contactManager = new ContactManager();
+        this.contactManager = new ContactManager();
     }
 
     @Test
     public void shouldCreateContact() {
-        ContactManager contactManager = new ContactManager();
-        contactManager.addContact("john", "Doe", "0123456789");
+        this.contactManager.addContact("john", "Doe", "0123456789");
         Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
 //      assertion.assertEquals compares the values and assert if not equal
         Assertions.assertEquals(1,contactManager.getAllContacts().size());
@@ -35,15 +37,21 @@ class ContactManagerTest {
     @Test
     @DisplayName("Should not create contanct when first name is null")
     public void createContactWithFirstNameIsNull(){
-        ContactManager contactManager = new ContactManager();
-
-
 //       it expects that A RuntimeException.class will be thrown, if not thrown the test will fail
         Assertions.assertThrows(RuntimeException.class, ()->{
-            contactManager.addContact("", "Doe", "0123456789");
+            this.contactManager.addContact("", "Doe", "0123456789");
         });
     }
 
+
+    //    @MethodSource("functionname") // takes the return value of method and then injects the values in test case
+    @DisplayName("Should not create contact with invalid data")
+    @ParameterizedTest
+    @ValueSource(strings = {""," "})
+    public void shouldNotCreateContactWithInvalidName(String fname){
+        this.contactManager.addContact(fname, "Doe", "0123456789");
+        Assertions.assertTrue(contactManager.getAllContacts().isEmpty());
+    }
 
     @AfterEach
     public void tearDown(){

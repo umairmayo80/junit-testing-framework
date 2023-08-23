@@ -20,7 +20,7 @@ public class Contact {
     }
 
     public void validateFirstName() {
-        if (this.firstName.isBlank())
+        if (this.firstName.isBlank() || firstName.contains(" "))
             throw new RuntimeException("First Name Cannot be null or empty");
     }
 
